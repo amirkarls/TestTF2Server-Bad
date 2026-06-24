@@ -1,5 +1,8 @@
 FROM cm2network/tf2:latest
 
-EXPOSE 27015/tcp 27015/udp
+# Покажем содержимое всех папок steam и попробуем найти srcds_run
+RUN echo "=== Contents of /home/steam ===" && ls -la /home/steam/ && \
+    echo "=== Contents of /home/steam/tf2 ===" && ls -la /home/steam/tf2/ && \
+    echo "=== Searching for srcds_run ===" && find /home/steam -name "srcds_run" -type f 2>/dev/null || echo "not found"
 
-CMD /home/steam/tf2-dedicated/srcds_run -console -game tf +map ctf_2fort +maxplayers 8 +port 27015 +sv_maxrate 20000 +sv_maxcmdrate 30 +sv_minrate 10000
+CMD tail -f /dev/null
