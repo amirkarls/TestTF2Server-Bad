@@ -1,3 +1,5 @@
 FROM cm2network/tf2:latest
 
-CMD sh -c "find / -name 'srcds_run' 2>/dev/null && tail -f /dev/null"
+EXPOSE 27015/tcp 27015/udp
+
+CMD /home/steam/tf2-dedicated/srcds_run -console -game tf +map ctf_2fort +maxplayers 8 +port 27015 +sv_maxrate 20000 +sv_maxcmdrate 30 +sv_minrate 10000
