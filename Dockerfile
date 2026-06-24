@@ -6,14 +6,14 @@ RUN apt-get update && \
     apt-get install -y lib32gcc-s1 lib32stdc++6 && \
     rm -rf /var/lib/apt/lists/*
 
-# Создаем пользователя steam
-RUN useradd -m steam
+# Создаем пользователя steam и даем ему права на его папку
+RUN useradd -m steam && chown -R steam:steam /home/steam
 
-# Переключаемся на пользователя steam
+# Переключаемся на steam для установки (чтобы кэш создавался в /home/steam)
 USER steam
 WORKDIR /home/steam
 
-# Устанавливаем TF2
+# Устанавливаем TF2 (теперь SteamCMD будет писать в /home/steam/Steam, а не в /root)
 RUN steamcmd +force_install_dir /home/steam/tf2 +login anonymous +app_update 232250 validate +quit
 
 # Открываем порты
