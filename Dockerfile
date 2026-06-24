@@ -1,20 +1,21 @@
 FROM steamcmd/steamcmd:latest
 
-# Устанавливаем необходимые библиотеки
+# Устанавливаем необходимые библиотеки и создаем пользователя
 USER root
 RUN apt-get update && \
     apt-get install -y lib32gcc-s1 lib32stdc++6 && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    useradd -m steam
 
-# Создаем пользователя steam и даем ему права на его папку
-RUN useradd -m steam && chown -R steam:steam /home/steam
+# Устанавливаем TF2 от root (чтобы избежать проблем с правами)
+RUN steamcmd +force_install_dir /home/steam/tf2 +login anonymous +app_update 232250 validate +quit
 
-# Переключаемся на steam для установки (чтобы кэш создавался в /home/steam)
+# Даем пользователю steam права на установленные файлы
+RUN chown -R steam:steam /home/steam
+
+# Переключаемся на steam для запуска сервера
 USER steam
 WORKDIR /home/steam
-
-# Устанавливаем TF2 (теперь SteamCMD будет писать в /home/steam/Steam, а не в /root)
-RUN steamcmd +force_install_dir /home/steam/tf2 +login anonymous +app_update 232250 validate +quit
 
 # Открываем порты
 EXPOSE 27015/tcp 27015/udp
